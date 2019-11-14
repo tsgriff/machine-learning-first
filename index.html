@@ -1,0 +1,159 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Email Filtering | Machine Learning</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body style="text-align: center">
+  <h2>Email Filtering Using Machine Learning</h2>
+  <input />
+  <button>Submit</button>
+  <h4>Emails</h4>
+  <ul id="email-list"></ul>
+  <h4>Spam</h4>
+  <ul id="spam-list"></ul>
+  <!-- Scripts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/brain.js"></script>
+  <script>
+    $(document).ready(function () {
+      const network = new brain.recurrent.LSTM();
+
+      const emailData = [{
+          "subject": "50% off",
+          "type": [0]
+        },
+        {
+          "subject": "Save up to 50% off",
+          "type": [0]
+        },
+        {
+          "subject": "limited time",
+          "type": [0]
+        },
+        {
+          "subject": "save money",
+          "type": [0]
+        },
+        {
+          "subject": "find a deal",
+          "type": [0]
+        },
+        {
+          "subject": "Apply now",
+          "type": [0]
+        },
+        {
+          "subject": "Act now",
+          "type": [0]
+        },
+        {
+          "subject": "Save up to",
+          "type": [0]
+        },
+        {
+          "subject": "find out if you qualify",
+          "type": [0]
+        },
+        {
+          "subject": "you're eligible",
+          "type": [0]
+        },
+        {
+          "subject": "eligible to activate",
+          "type": [0]
+        },
+        {
+          "subject": "affordable plan",
+          "type": [0]
+        },
+        {
+          "subject": "Password change",
+          "type": [1]
+        },
+        {
+          "subject": "Password change request",
+          "type": [1]
+        },
+        {
+          "subject": "Bill has replied to your post",
+          "type": [1]
+        },
+        {
+          "subject": "Jim has replied to your post",
+          "type": [1]
+        },
+        {
+          "subject": "Alex has replied to your post",
+          "type": [1]
+        },
+        {
+          "subject": "Your order",
+          "type": [1]
+        },
+        {
+          "subject": "Account statement",
+          "type": [1]
+        },
+        {
+          "subject": "replied to you",
+          "type": [1]
+        },
+        {
+          "subject": "commented on",
+          "type": [1]
+        },
+        {
+          "subject": "Package delivered",
+          "type": [1]
+        },
+        {
+          "subject": "Resume",
+          "type": [1]
+        },
+        {
+          "subject": "coding exercise",
+          "type": [1]
+        },
+        {
+          "subject": "sign in",
+          "type": [1]
+        }
+      ]
+
+      const trainingData = emailData.map(email => ({
+        input: email.subject,
+        output: email.type
+      }))
+
+      network.train(trainingData, {
+        iterations: 2000,
+        log: (stats) => {
+          console.log(stats)
+        }
+      });
+
+      $('button').on('click', function (e) {
+        var inputValue = $('input').val();
+        const result = network.run(inputValue);
+        console.log(result);
+        if (result == 0) {
+          $('#spam-list').append('<li>' + inputValue + '</li>');
+        } else {
+          $('#email-list').append('<li>' + inputValue + '</li>');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
